@@ -11,7 +11,7 @@ This program is composed of a single python script titled **"main.py"**
 
 To run the program, download "main.py" and run it from your IDE. The program will walk you through the process of entering your API key and indicating file locations for the csv file of research outputs to be updated. 
 
-You will also need to input the URL for the Research Outputs endpoint for your instance of the Pure CRUD (read/write) API (this URL should include a final "/" e.g. https://experts.illinois.edu/ws/api/research-outputs/).
+You will also need to input the URL for the Research Outputs endpoint for your instance of the Pure CRUD (read/write) API (this URL should include a final "/" e.g. https://experts.illinois.edu/ws/api/research-outputs/). Please note that the URL will likely be different for the Staging and Production sides of your Pure instance, so be sure you are using the right one while testing the program in Staging to avoid making unwanted changes to the Production side. The API key should also be different, so that will reduce the risks of this happening. 
 
 Finally, you will be asked to input the column header from your CSV file for the column that includes the unique UUID for each research output. 
 
