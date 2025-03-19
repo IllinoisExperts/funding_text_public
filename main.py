@@ -8,41 +8,19 @@ import os
 def main():
 
     APIkey = input("Enter your API key: ")
+    url = input("Enter the URL for the research outputs endpoint of your Pure instance: ")
+    
     get_headers = {'accept': 'application/json', 'api-key': APIkey}
     put_headers = {'accept': 'application/json', 'api-key': APIkey, "content-type": "application/json"}
 
-    while True:
-        mode = input("Are you updating records in Production? (y/n): ")
-        if mode.lower() == "y":
-            mode = "production"
-            break
-        elif mode.lower() == "n":
-            mode = "staging"
-            break
-        else:
-            print("Sorry, please only input \'y\' for Production or \'n\' for Staging")
-
-    datafile = input("Enter the file path to the csv file of research outputs you would like to update: ")
+    datafile = input("Enter the file path to the csv file of research outputs you would like to update (exported from Pure): ")
+    uuid_col = input("Enter the name of the column in the csv file that contains the UUID for each output: ")
 
     while not os.path.isfile(datafile):
         print(datafile, 'is not a valid file. Please enter a valid file name (any slashes should be forward slashes and no quotation marks).')
         datafile = input("Enter the file path to the csv file of research outputs you would like to update: ")
 
-    '''
-    Based on whether user chooses to update production or staging, selects relevant columns from the csv file. Sometimes, the number codes of these columns changes
-    in Pure's excel output. If this occurs and you are encountering an error, please change the names in "columns_to_read" to match the correct names in the output file.
-    '''
-    
-    if mode == "production":
-        url = 'https://experts.illinois.edu/ws/api/research-outputs/'
-        columns_to_read = ["4 Title of the contribution in original language", "1 UUID"]
-        UUID_col = columns_to_read[1]
-    else:
-        url = 'https://illinois-staging.elsevierpure.com/ws/api/research-outputs/'
-        columns_to_read = ["2 Title of the contribution in original language", "17 UUID"]
-        UUID_col = columns_to_read[1]
-
-    df = pd.read_csv(datafile, usecols = columns_to_read)
+    df = pd.read_csv(datafile, usecols = [uuid_col])
 
     out_folder = input("Enter a path where the program should place error logs: ")
 
@@ -58,14 +36,14 @@ def main():
     will handle it and print the error to the error log then continue to the next iteration in the loop, as the PUT request would also fail in this case. 
 
     Next, if the GET request was a success, the program makes a PUT request for the same research output and copies the Funding Text information on the record
-    to the Bibliographic note field. 
+    to the Bibliographic Note field. 
 
     Finally, the program closes the error logs and prints an exit report to the console with the number of research outputs updated.
     '''
 
     for i in tqdm(range(len(df))):
         try:
-            get_response = re.get(f'{url}{df.loc[i, UUID_col]}', headers = get_headers, timeout = 10)
+            get_response = re.get(f'{url}{df.loc[i, uuid_col]}', headers = get_headers, timeout = 10)
             get_response.raise_for_status()
         except re.exceptions.HTTPError as errh:
             print("HTTP Error: ", errh)
@@ -101,7 +79,7 @@ def main():
             })
 
             try:
-                put_response = re.put(f'{url}{df.loc[i, UUID_col]}', headers = put_headers, data = values, timeout = 10)
+                put_response = re.put(f'{url}{df.loc[i, uuid_col]}', headers = put_headers, data = values, timeout = 10)
                 put_response.raise_for_status()
             except re.exceptions.HTTPError as errh:
                 print("HTTP Error: ", errh)
