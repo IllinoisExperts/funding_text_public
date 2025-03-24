@@ -38,3 +38,7 @@ If you need helping installing these packages, the following guide may be useful
 
 Many Python IDEs also include convenient tools for installing packages. You can look for guides based on your specific IDE, such as this one for PyCharm: https://www.jetbrains.com/help/pycharm/installing-uninstalling-and-upgrading-packages.html
 
+## Contact Info
+
+If you have questions or comments about using this program, you can contact the Illinois Experts team at experts-help@illinois.edu
+
