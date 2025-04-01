@@ -57,7 +57,7 @@ def main():
             print("Timeout Error: ", errt)
             get_error_count += 1
             get_errors.write("Timeout Error: " + str(errt) + '\n' + str(get_response.status_code) + '\n' + str(get_response.url) + '\n' + str(get_response.text) + '\n' + str(get_response.headers) + '\n\n')
-        except requests.exceptions.RequestException as err:
+        except re.exceptions.RequestException as err:
             print("Something went wrong: ", err)
             get_error_count += 1
             get_errors.write("Something went wrong: " + str(err) + '\n' + str(get_response.status_code) + '\n' + str(get_response.url) + '\n' + str(get_response.text) + '\n' + str(get_response.headers) + '\n\n')
