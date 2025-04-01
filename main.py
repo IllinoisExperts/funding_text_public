@@ -93,7 +93,7 @@ def main():
                 print("Timeout Error: ", errt)
                 put_error_count += 1
                 put_errors.write("Timeout Error: " + str(errt) + '\n' + str(put_response.status_code) + '\n' + str(put_response.url) + '\n' + str(put_response.text) + '\n' + str(put_response.headers) + '\n\n')
-            except requests.exceptions.RequestException as err:
+            except re.exceptions.RequestException as err:
                 print("Something went wrong: ", err)
                 put_error_count += 1
                 put_errors.write("Something went wrong: " + str(err) + '\n' + str(put_response.status_code) + '\n' + str(put_response.url) + '\n' + str(put_response.text) + '\n' + str(put_response.headers) + '\n\n')
