@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Illinois Experts
+Copyright (c) 2025 University of Illinois Board of Trustees
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
