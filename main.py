@@ -14,6 +14,8 @@ def main():
     put_headers = {'accept': 'application/json', 'api-key': APIkey, "content-type": "application/json"}
 
     datafile = input("Enter the file path to the csv file of research outputs you would like to update (exported from Pure): ")
+    datafile = datafile.strip("\"").replace("\\", "/")
+    
     uuid_col = input("Enter the name of the column in the csv file that contains the UUID for each output: ")
 
     while not os.path.isfile(datafile):
@@ -23,6 +25,7 @@ def main():
     df = pd.read_csv(datafile, usecols = [uuid_col])
 
     out_folder = input("Enter a path where the program should place error logs: ")
+    out_folder = out_folder.strip("\"").replace("\\", "/")
 
     get_errors = open(f"{out_folder}/get_errors.txt", "w+")
     put_errors = open(f"{out_folder}/put_errors.txt", "w+")
@@ -52,11 +55,11 @@ def main():
         except re.exceptions.ConnectionError as errc:
             print("Error Connecting: ", errc)
             get_error_count += 1
-            get_errors.write("Error Connecting: " + str(errc) + '\n' + str(get_response.status_code) + '\n' + str(get_response.url) + '\n' + str(get_response.text) + '\n' + str(get_response.headers) + '\n\n')
+            get_errors.write("Error Connecting for url: " + f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errc) + '\n\n')
         except re.exceptions.Timeout as errt:
             print("Timeout Error: ", errt)
             get_error_count += 1
-            get_errors.write("Timeout Error: " + str(errt) + '\n' + str(get_response.status_code) + '\n' + str(get_response.url) + '\n' + str(get_response.text) + '\n' + str(get_response.headers) + '\n\n')
+            get_errors.write("Timeout Error for url: " f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errt) + '\n\n')
         except re.exceptions.RequestException as err:
             print("Something went wrong: ", err)
             get_error_count += 1
@@ -88,11 +91,11 @@ def main():
             except re.exceptions.ConnectionError as errc:
                 print("Error Connecting: ", errc)
                 put_error_count += 1
-                put_errors.write("Error Connecting: " + str(errc) + '\n' + str(put_response.status_code) + '\n' + str(put_response.url) + '\n' + str(put_response.text) + '\n' + str(put_response.headers) + '\n\n')
+                put_errors.write("Error Connecting for url: " + f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errc) + '\n\n')
             except re.exceptions.Timeout as errt:
                 print("Timeout Error: ", errt)
                 put_error_count += 1
-                put_errors.write("Timeout Error: " + str(errt) + '\n' + str(put_response.status_code) + '\n' + str(put_response.url) + '\n' + str(put_response.text) + '\n' + str(put_response.headers) + '\n\n')
+                put_errors.write("Timeout Error for url: " f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errt) + '\n\n')
             except re.exceptions.RequestException as err:
                 print("Something went wrong: ", err)
                 put_error_count += 1
