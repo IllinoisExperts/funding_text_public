@@ -59,7 +59,7 @@ def main():
         except re.exceptions.Timeout as errt:
             print("Timeout Error: ", errt)
             get_error_count += 1
-            get_errors.write("Timeout Error for url: " f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errt) + '\n\n')
+            get_errors.write("Timeout Error for url: " + f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errt) + '\n\n')
         except re.exceptions.RequestException as err:
             print("Something went wrong: ", err)
             get_error_count += 1
@@ -95,7 +95,7 @@ def main():
             except re.exceptions.Timeout as errt:
                 print("Timeout Error: ", errt)
                 put_error_count += 1
-                put_errors.write("Timeout Error for url: " f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errt) + '\n\n')
+                put_errors.write("Timeout Error for url: " + f'{url}{df.loc[i, uuid_col]}'+ '\n' + str(errt) + '\n\n')
             except re.exceptions.RequestException as err:
                 print("Something went wrong: ", err)
                 put_error_count += 1
