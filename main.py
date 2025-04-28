@@ -8,21 +8,45 @@ import os
 def main():
 
     APIkey = input("Enter your API key: ")
-    url = input("Enter the URL for the research outputs endpoint of your Pure instance: ")
-    
     get_headers = {'accept': 'application/json', 'api-key': APIkey}
     put_headers = {'accept': 'application/json', 'api-key': APIkey, "content-type": "application/json"}
 
-    datafile = input("Enter the file path to the csv file of research outputs you would like to update (exported from Pure): ")
-    uuid_col = input("Enter the name of the column in the csv file that contains the UUID for each output: ")
+    while True:
+        mode = input("Are you updating records in Production? (y/n): ")
+        if mode.lower() == "y":
+            mode = "production"
+            break
+        elif mode.lower() == "n":
+            mode = "staging"
+            break
+        else:
+            print("Sorry, please only input \'y\' for Production or \'n\' for Staging")
+
+    datafile = input("Enter the file path to the csv file of research outputs you would like to update: ")
+    datafile = datafile.strip("\"").replace("\\", "/")
 
     while not os.path.isfile(datafile):
         print(datafile, 'is not a valid file. Please enter a valid file name (any slashes should be forward slashes and no quotation marks).')
         datafile = input("Enter the file path to the csv file of research outputs you would like to update: ")
 
-    df = pd.read_csv(datafile, usecols = [uuid_col])
+    '''
+    Based on whether user chooses to update production or staging, selects relevant columns from the csv file. Sometimes, the number codes of these columns changes
+    in Pure's excel output. If this occurs and you are encountering an error, please change the names in "columns_to_read" to match the correct names in the output file.
+    '''
+    
+    if mode == "production":
+        url = 'https://experts.illinois.edu/ws/api/research-outputs/'
+        columns_to_read = ["4 Title of the contribution in original language", "1 UUID"]
+        UUID_col = columns_to_read[1]
+    else:
+        url = 'https://illinois-staging.elsevierpure.com/ws/api/research-outputs/'
+        columns_to_read = ["2 Title of the contribution in original language", "17 UUID"]
+        UUID_col = columns_to_read[1]
+
+    df = pd.read_csv(datafile, usecols = columns_to_read)
 
     out_folder = input("Enter a path where the program should place error logs: ")
+    out_folder = out_folder.strip("\"").replace("\\", "/")
 
     get_errors = open(f"{out_folder}/get_errors.txt", "w+")
     put_errors = open(f"{out_folder}/put_errors.txt", "w+")
@@ -36,14 +60,14 @@ def main():
     will handle it and print the error to the error log then continue to the next iteration in the loop, as the PUT request would also fail in this case. 
 
     Next, if the GET request was a success, the program makes a PUT request for the same research output and copies the Funding Text information on the record
-    to the Bibliographic Note field. 
+    to the Bibliographic note field. 
 
     Finally, the program closes the error logs and prints an exit report to the console with the number of research outputs updated.
     '''
 
     for i in tqdm(range(len(df))):
         try:
-            get_response = re.get(f'{url}{df.loc[i, uuid_col]}', headers = get_headers, timeout = 10)
+            get_response = re.get(f'{url}{df.loc[i, UUID_col]}', headers = get_headers, timeout = 10)
             get_response.raise_for_status()
         except re.exceptions.HTTPError as errh:
             print("HTTP Error: ", errh)
@@ -52,11 +76,11 @@ def main():
         except re.exceptions.ConnectionError as errc:
             print("Error Connecting: ", errc)
             get_error_count += 1
-            get_errors.write("Error Connecting: " + str(errc) + '\n' + str(get_response.status_code) + '\n' + str(get_response.url) + '\n' + str(get_response.text) + '\n' + str(get_response.headers) + '\n\n')
+            get_errors.write("Error Connecting: " + str(errc) + '\n\n')
         except re.exceptions.Timeout as errt:
             print("Timeout Error: ", errt)
             get_error_count += 1
-            put_errors.write("Timeout Error occurred while making request with url " + f'{url}{df.loc[i, uuid_col]}' + '\n' + str(errt) + '\n' + '\n\n')
+            get_errors.write("Timeout Error: " + str(errt) + '\n\n')
         except re.exceptions.RequestException as err:
             print("Something went wrong: ", err)
             get_error_count += 1
@@ -79,7 +103,7 @@ def main():
             })
 
             try:
-                put_response = re.put(f'{url}{df.loc[i, uuid_col]}', headers = put_headers, data = values, timeout = 10)
+                put_response = re.put(f'{url}{df.loc[i, UUID_col]}', headers = put_headers, data = values, timeout = 10)
                 put_response.raise_for_status()
             except re.exceptions.HTTPError as errh:
                 print("HTTP Error: ", errh)
@@ -88,11 +112,11 @@ def main():
             except re.exceptions.ConnectionError as errc:
                 print("Error Connecting: ", errc)
                 put_error_count += 1
-                put_errors.write("Error Connecting: " + str(errc) + '\n' + str(put_response.status_code) + '\n' + str(put_response.url) + '\n' + str(put_response.text) + '\n' + str(put_response.headers) + '\n\n')
+                put_errors.write("Error Connecting: " + str(errc) + '\n\n')
             except re.exceptions.Timeout as errt:
                 print("Timeout Error: ", errt)
                 put_error_count += 1
-                put_errors.write("Timeout Error occurred while making request with url " + f'{url}{df.loc[i, uuid_col]}' + '\n' + str(errt) + '\n' + '\n\n')
+                put_errors.write("Timeout Error: " + str(errt) +  '\n\n')
             except re.exceptions.RequestException as err:
                 print("Something went wrong: ", err)
                 put_error_count += 1
