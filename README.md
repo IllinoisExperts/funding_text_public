@@ -18,7 +18,7 @@ This is a python program that takes in a csv file list of research outputs with 
 
 Each Research output's UUID must be included in the csv file. If the UUID is not included in the current export from Pure, navigate to Administrator > Export to Excel > Research outputs and add UUID to the export configuration (preferrably as the first column).
 
-To export for initial update of existing Research outputes:
+To export for initial update of existing Research outputs:
 
 * In the Pure backend, navigate to Editor > Research outputs.
 * Apply the filter "Funding information" (and select "Funding Text - With"--The program is not equipped to handle API responses that do not have funding text present and this will likely cause a fatal error).
