@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a python program that takes in a csv file list of research outputs with funding text information from Pure and uses the Pure (CRUD) API to copy the funding information into the Bibliographic Note field. The purpose of this process is to improve the findability of funding information in Pure as "Bibliographic Note" is a searchable field while "Funding Text on Record" is not. 
+This is a python program that takes in a csv file list of research outputs from Pure and uses the Pure (CRUD) API to copy the contents of the "Funding Text on Record" field into the "Bibliographic Note" field in order to improve the findability of funding/asset information in Pure ("Bibliographic Note" is a searchable field while "Funding Text on Record" is not).
 
 **IMPORTANT**: This program is written to copy the information from the Funding Text field and **replace** whatever is in the Biblographic Note field with that information. If you have important information in the Bibliographic Note field that you would **not** like to overwrite, please do not use this program or modify it to your needs.
 
@@ -47,15 +47,17 @@ Many Python IDEs also include convenient tools for installing packages. You can 
 
 This program is composed of a single python script titled **"main.py"** 
 
-To run the program, download "main.py" and run it from your integrated development environment (IDE). The program will walk you through the process of entering your API key and indicating file locations for the csv file of research outputs to be updated. 
+To run the program, download "main.py" and run it from your integrated development environment (IDE). The program will walk you through the following process:
 
-To copy the file path from Windows file explorer in a format that is understandable to the program, right click on the file and select "Copy as path" (Keyboard shortcut CTRL+SHIFT+C) and then paste it into the program console. Make sure the file type extension is also included. The same can be done for folder locations by right clicking the folder name at the top address bar in file explorer and clicking "Copy address as text." Once you have entered a path, press ENTER and the program will automatically move to the next step. 
+1. Enter your API key. Press ENTER and the program will automatically move to the next step.
 
-You will also need to input the URL for the Research Outputs endpoint for your instance of the Pure CRUD (read/write) API (this URL should include a final "/" e.g. https://experts.illinois.edu/ws/api/research-outputs/). (Please note that the URL will likely be different for the Staging and Production sides of your Pure instance, so be sure you are using the right one while testing the program in Staging to avoid making unwanted changes to the Production side. The API key should also be different, so that will reduce the risks of this happening.)
+2. Enter the file path of the csv file in a format that is understandable to the program (right click on the file and select "Copy as path" and then paste it into the program console. Make sure the file type extension is also included.)  
 
-You will be asked to input the column header from your CSV file for the column that includes the unique UUID for each research output.
+3. Enter the URL for the Research Outputs endpoint for your instance of the Pure CRUD (read/write) API (this URL should include a final "/" e.g. https://experts.illinois.edu/ws/api/research-outputs/). (Please note that the URL will likely be different for the Staging and Production sides of your Pure instance, so be sure you are using the right one while testing the program in Staging to avoid making unwanted changes to the Production side. The API key should also be different, so that will reduce the risk of this happening.)
 
-Finally, you will be asked to provide the file path for the folder that will hold the error logs once the program completes.
+4. Enter the column header from your CSV file for the column that includes the unique UUID for each research output.
+
+5. Finally, enter the file path for the folder that will hold the error logs once the program completes (right click the folder name and select "Copy as path" and then paste it into the program console.)
 
 Once you have entered all of this information, the program will begin to read through the CSV file you indicated and make successive GET then PUT requests to copy the Funding Text information into the Bibliographic Note field. If there are no errors while making the requests, you will see the program output a message that the request went through along with the URL for the request. Otherwise, an error message will be printed and written to the error files. A progress bar will also update with each request visualizing the program's progress as it runs. 
 
