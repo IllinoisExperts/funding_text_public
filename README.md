@@ -41,7 +41,7 @@ This program requires installing some external python packages. The packages you
 
 If you need helping installing these packages, the following guide may be useful: https://packaging.python.org/en/latest/tutorials/installing-packages/
 
-Many Python IDEs also include convenient tools for installing packages. You can look for guides based on your specific IDE, such as this one for PyCharm: https://www.jetbrains.com/help/pycharm/installing-uninstalling-and-upgrading-packages.html
+Many Python integrated development environments (IDEs) also include convenient tools for installing packages. You can look for guides based on your specific IDE, such as this one for PyCharm: https://www.jetbrains.com/help/pycharm/installing-uninstalling-and-upgrading-packages.html
 
 ## How to Run
 
